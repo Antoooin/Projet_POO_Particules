@@ -18,6 +18,12 @@ struct Vec2 {
     Vec2 operator*(double s) const {
         return {x*s,y*s};
     }
+
+    Vec2 operator/(double s) const {
+    return {x/s, y/s};
+    }
+
+
     //Peut être overkill mais pratique pour LJ
     Vec2& operator+=(const Vec2& v){
         x+=v.x;
@@ -29,6 +35,12 @@ struct Vec2 {
         y-=v.y;
         return *this;
     }
+    Vec2& operator*=(double s){
+    x *= s;
+    y *= s;
+    return *this;
+    }
+
 
 
     //Normes
