@@ -51,11 +51,13 @@ int main()
         const auto& particles = sys.getParticles();
 
         // Export positions de toutes les particules dans le CSV
-        for(const auto& p : particles)
-            out << p.position.x << "," << p.position.y;
-            if (i!=particles.size()-1)
-                out <<",";
+        for(size_t i = 0; i < particles.size(); ++i) {
+            out << particles[i].position.x << "," << particles[i].position.y;
+            if(i != particles.size() - 1)
+             out << ",";
+        }
         out << "\n";
+
 
         // Debug console toutes les 100 steps
         if(i % 100 == 0)
