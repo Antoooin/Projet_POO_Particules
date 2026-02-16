@@ -7,13 +7,14 @@
 #include "Simulation.h"
 #include "VelocityVerlet.h"
 #include "IdealGas.h"
+#include "LennardJones.h"
 #include "Energy.h"
 
 int main()
 {
-    const size_t N = 100;
+    const size_t N = 200;
     const double boxSize = 20.0;
-    const double dt = 0.01;
+    const double dt = 0.001;
 
     // --- 1. Création système ---
     System system(N, boxSize);
@@ -22,7 +23,8 @@ int main()
     Generator::randomGas(system, 1.0);
 
     // --- 2. Simulation ---
-    auto potential = std::make_unique<IdealGas>();
+    // auto potential = std::make_unique<IdealGas>();
+    auto potential = std::make_unique<LennardJones>(1.0,1.0,2.5);
     auto integrator = std::make_unique<VelocityVerlet>();
 
     Simulation sim(
