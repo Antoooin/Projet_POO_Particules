@@ -52,7 +52,9 @@ int main()
 
         // Export positions de toutes les particules dans le CSV
         for(const auto& p : particles)
-            out << p.position.x << "," << p.position.y << ",";
+            out << p.position.x << "," << p.position.y;
+            if (i!=particles.size()-1)
+                out <<",";
         out << "\n";
 
         // Debug console toutes les 100 steps
