@@ -12,19 +12,18 @@
 
 int main()
 {
-    const size_t N = 200;
+    const size_t N = 500;
     const double boxSize = 20.0;
-    const double dt = 0.001;
+    const double dt = 0.0005;
 
     // --- 1. Création système ---
     System system(N, boxSize);
 
     // Génération gaz
-    Generator::randomGas(system, 1.0);
+    Generator::randomGas(system, 0.2);
 
     // --- 2. Simulation ---
-    // auto potential = std::make_unique<IdealGas>();
-    auto potential = std::make_unique<LennardJones>(1.0,1.0,2.5);
+    auto potential = std::make_unique<LennardJones>(2.0, 1.0, 2.5);
     auto integrator = std::make_unique<VelocityVerlet>();
 
     Simulation sim(
@@ -43,12 +42,11 @@ int main()
 
     // --- 4. Boucle temporelle ---
     std::cout << "Running simulation...\n";
-    const size_t steps = 1000;
+    const size_t steps = 10000;
 
-    for(size_t i = 0; i < steps; ++i)
+    for(size_t step = 0; step < steps; ++step)
     {
         sim.step();
-
         auto& sys = sim.getSystem();
         const auto& particles = sys.getParticles();
 
@@ -56,20 +54,21 @@ int main()
         for(size_t i = 0; i < particles.size(); ++i) {
             out << particles[i].position.x << "," << particles[i].position.y;
             if(i != particles.size() - 1)
-             out << ",";
+                out << ",";
         }
         out << "\n";
 
-
         // Debug console toutes les 100 steps
-        if(i % 100 == 0)
+        if(step % 100 == 0)
         {
-            const auto& p0 = particles[0];
             double Ek = Energy::kinetic(sys);
+            double Ep = Energy::potentialLJ(sys, 1.0, 1.0); // epsilon,sigma = 1.0
+            double Etot = Ek + Ep;
 
-            std::cout << "Step " << i
-                      << " | p0=(" << p0.position.x << ", " << p0.position.y << ")"
+            std::cout << "Step " << step
                       << " | Ek=" << Ek
+                      << " | Ep=" << Ep
+                      << " | Etot=" << Etot
                       << "\n";
         }
     }
