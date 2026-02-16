@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <memory>
 
 #include "System.h"
@@ -7,7 +8,6 @@
 #include "VelocityVerlet.h"
 #include "IdealGas.h"
 #include "Energy.h"
-
 
 int main()
 {
@@ -32,29 +32,44 @@ int main()
         dt
     );
 
-    // --- 3. Test évolution ---
-    std::cout << "Running simulation...\n";
+    // --- 3. Fichier de sortie CSV ---
+    std::ofstream out("positions.csv");
+    if (!out.is_open()) {
+        std::cerr << "Erreur : impossible d'ouvrir positions.csv\n";
+        return 1;
+    }
 
+    // --- 4. Boucle temporelle ---
+    std::cout << "Running simulation...\n";
     const size_t steps = 1000;
 
     for(size_t i = 0; i < steps; ++i)
     {
         sim.step();
 
-        // Debug toutes les 100 steps
+        auto& sys = sim.getSystem();
+        const auto& particles = sys.getParticles();
+
+        // Export positions de toutes les particules dans le CSV
+        for(const auto& p : particles)
+            out << p.position.x << "," << p.position.y << ",";
+        out << "\n";
+
+        // Debug console toutes les 100 steps
         if(i % 100 == 0)
         {
-        auto& sys = sim.getSystem();
-        const auto& p = sys.getParticles()[0];
+            const auto& p0 = particles[0];
+            double Ek = Energy::kinetic(sys);
 
-        double Ek = Energy::kinetic(sys);
-
-        std::cout << "Step " << i
-                << " | p0=(" << p.position.x << ", " << p.position.y << ")"
-                << " | Ek=" << Ek
-                << "\n";
-}
+            std::cout << "Step " << i
+                      << " | p0=(" << p0.position.x << ", " << p0.position.y << ")"
+                      << " | Ek=" << Ek
+                      << "\n";
+        }
     }
 
-    std::cout << "Simulation finished.\n";
+    out.close();
+    std::cout << "Simulation finished. Positions saved to positions.csv\n";
+
+    return 0;
 }
