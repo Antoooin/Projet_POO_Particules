@@ -6,9 +6,9 @@
 #include "Generator.h"
 #include "Simulation.h"
 #include "VelocityVerlet.h"
-#include "IdealGas.h"
 #include "LennardJones.h"
 #include "Energy.h"
+#include "RDF.h"
 
 int main()
 {
@@ -33,14 +33,28 @@ int main()
         dt
     );
 
-    // --- 3. Fichier de sortie CSV ---
-    std::ofstream out("positions.csv");
-    if (!out.is_open()) {
-        std::cerr << "Erreur : impossible d'ouvrir positions.csv\n";
+    // --- 3. Fichiers de sortie ---
+    std::ofstream posFile("positions.csv");
+    std::ofstream velFile("velocities.csv");
+    std::ofstream energyFile("energies.csv");
+
+    if (!posFile || !velFile || !energyFile) {
+        std::cerr << "Erreur ouverture fichiers output\n";
         return 1;
     }
 
-    // --- 4. Boucle temporelle ---
+    // Header énergie
+    energyFile << "step,Ek,Ep,Etot\n";
+
+    // --- 4. RDF ---
+    const double rMax = boxSize * 0.5;
+    const int bins = 100;
+    RDF rdf(rMax, bins);
+
+    size_t rdfSamples = 0;
+    const size_t rdfStart = 2000; // ignore phase transitoire
+
+    // --- 5. Simulation ---
     std::cout << "Running simulation...\n";
     const size_t steps = 10000;
 
@@ -50,31 +64,55 @@ int main()
         auto& sys = sim.getSystem();
         const auto& particles = sys.getParticles();
 
-        // Export positions de toutes les particules dans le CSV
+        // ---------------- POSITIONS ----------------
         for(size_t i = 0; i < particles.size(); ++i) {
-            out << particles[i].position.x << "," << particles[i].position.y;
-            if(i != particles.size() - 1)
-                out << ",";
+            posFile << particles[i].position.x << "," << particles[i].position.y;
+            if(i != particles.size() - 1) posFile << ",";
         }
-        out << "\n";
+        posFile << "\n";
 
-        // Debug console toutes les 100 steps
-        if(step % 100 == 0)
+        // ---------------- VELOCITIES ----------------
+        for(size_t i = 0; i < particles.size(); ++i) {
+            velFile << particles[i].velocity.x << "," << particles[i].velocity.y;
+            if(i != particles.size() - 1) velFile << ",";
+        }
+        velFile << "\n";
+
+        // ---------------- ENERGIES ----------------
+        double Ek = Energy::kinetic(sys);
+        double Ep = Energy::potentialLJ(sys, 2.0, 1.0);
+        double Etot = Ek + Ep;
+
+        energyFile << step << "," << Ek << "," << Ep << "," << Etot << "\n";
+
+        // Debug console
+        if(step % 500 == 0)
         {
-            double Ek = Energy::kinetic(sys);
-            double Ep = Energy::potentialLJ(sys, 1.0, 1.0); // epsilon,sigma = 1.0
-            double Etot = Ek + Ep;
-
             std::cout << "Step " << step
                       << " | Ek=" << Ek
                       << " | Ep=" << Ep
                       << " | Etot=" << Etot
                       << "\n";
         }
+
+        // ---------------- RDF sampling ----------------
+        if(step > rdfStart) {
+            rdf.sample(sys);
+            rdfSamples++;
+        }
     }
 
-    out.close();
-    std::cout << "Simulation finished. Positions saved to positions.csv\n";
+    posFile.close();
+    velFile.close();
+    energyFile.close();
+
+    // --- 6. Finalisation RDF ---
+    std::cout << "Normalizing RDF...\n";
+    rdf.normalize(sim.getSystem(), rdfSamples);
+    rdf.saveCSV("rdf.csv");
+
+    std::cout << "Simulation finished.\n";
+    std::cout << "Saved: positions.csv, velocities.csv, energies.csv, rdf.csv\n";
 
     return 0;
 }
