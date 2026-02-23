@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "System.h"
+#include "Config.h"
 #include "Generator.h"
 #include "Simulation.h"
 #include "VelocityVerlet.h"
@@ -12,25 +13,28 @@
 
 int main()
 {
-    const size_t N = 500;
-    const double boxSize = 20.0;
-    const double dt = 0.0005;
+    // -------- LOAD CONFIG --------
+    Config cfg = loadConfig("config.txt");
 
     // --- 1. Création système ---
-    System system(N, boxSize);
+    System system(cfg.N, cfg.boxSize);
 
     // Génération gaz
-    Generator::randomGas(system, 0.2);
+    Generator::randomGas(system, cfg.initVelocity);
 
     // --- 2. Simulation ---
-    auto potential = std::make_unique<LennardJones>(2.0, 1.0, 2.5);
+    auto potential = std::make_unique<LennardJones>(
+        cfg.epsilon, 
+        cfg.sigma, 
+        cfg.cutoff
+    );
     auto integrator = std::make_unique<VelocityVerlet>();
 
     Simulation sim(
         std::move(system),
         std::move(potential),
         std::move(integrator),
-        dt
+        cfg.dt
     );
 
     // --- 3. Fichiers de sortie ---
@@ -47,18 +51,16 @@ int main()
     energyFile << "step,Ek,Ep,Etot\n";
 
     // --- 4. RDF ---
-    const double rMax = boxSize * 0.5;
-    const int bins = 100;
-    RDF rdf(rMax, bins);
+    const double rMax = cfg.boxSize * 0.5;
+    RDF rdf(rMax, cfg.rdfBins);
 
     size_t rdfSamples = 0;
-    const size_t rdfStart = 2000; // ignore phase transitoire
 
     // --- 5. Simulation ---
     std::cout << "Running simulation...\n";
     const size_t steps = 10000;
 
-    for(size_t step = 0; step < steps; ++step)
+    for(size_t step = 0; step < cfg.steps; ++step)
     {
         sim.step();
         auto& sys = sim.getSystem();
@@ -80,7 +82,7 @@ int main()
 
         // ---------------- ENERGIES ----------------
         double Ek = Energy::kinetic(sys);
-        double Ep = Energy::potentialLJ(sys, 2.0, 1.0);
+        double Ep = Energy::potentialLJ(sys, cfg.epsilon, cfg.sigma);
         double Etot = Ek + Ep;
 
         energyFile << step << "," << Ek << "," << Ep << "," << Etot << "\n";
@@ -96,7 +98,7 @@ int main()
         }
 
         // ---------------- RDF sampling ----------------
-        if(step > rdfStart) {
+        if(step > cfg.rdfStart) {
             rdf.sample(sys);
             rdfSamples++;
         }
