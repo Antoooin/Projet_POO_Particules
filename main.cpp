@@ -2,14 +2,19 @@
 #include <fstream>
 #include <memory>
 
-#include "System.h"
+#include "Boundary.h"
 #include "Config.h"
-#include "Generator.h"
-#include "Simulation.h"
-#include "VelocityVerlet.h"
-#include "LennardJones.h"
 #include "Energy.h"
+#include "Generator.h"
+#include "IdealGas.h"
+#include "Integrator.h"
+#include "LennardJones.h"
+#include "Particle.h"
+#include "Potential.h"
 #include "RDF.h"
+#include "Simulation.h"
+#include "System.h"
+#include "VelocityVerlet.h"
 
 int main()
 {
@@ -22,12 +27,31 @@ int main()
     // Génération gaz
     Generator::randomGas(system, cfg.initVelocity);
 
-    // --- 2. Simulation ---
-    auto potential = std::make_unique<LennardJones>(
-        cfg.epsilon, 
-        cfg.sigma, 
-        cfg.cutoff
-    );
+    // --- 2. Choix Potentiel ---
+    std::unique_ptr<Potential> potential;
+
+    if(cfg.potential == "LJ")
+    {
+        std::cout << "Using Lennard-Jones potential\n";
+
+        potential = std::make_unique<LennardJones>(
+            cfg.epsilon,
+            cfg.sigma,
+            cfg.cutoff
+        );
+    }
+    else if(cfg.potential == "NONE")
+    {
+        std::cout << "Using Ideal Gas (no interactions)\n";
+        potential = std::make_unique<IdealGas>();
+    }
+    else
+    {
+        std::cerr << "Unknown potential type\n";
+        return 1;
+    }
+
+
     auto integrator = std::make_unique<VelocityVerlet>();
 
     Simulation sim(

@@ -9,6 +9,9 @@ struct Config {
 
     double initVelocity = 0.2;
 
+    // Potentiel
+    std::string potential = "LJ";   // "LJ" ou "NONE"
+
     // Lennard-Jones
     double epsilon = 2.0;
     double sigma = 1.0;
