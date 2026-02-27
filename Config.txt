@@ -1,19 +1,19 @@
 # -------- SYSTEM --------
-N = 400
-boxSize = 20
-dt = 0.0005
-steps = 15000
-initVelocity = 0.3
+N = 400 //nb de particules
+boxSize = 20 // taille de la boite (carrée, ne pas y toucher)
+dt = 0.0005 // Ne pas changer, si trop haut -> pb pour LJ ("saut" de barrières énergétiques donc collision)
+steps = 15000 // à voir pour une thermalisation suffisante 
+initVelocity = 0.3 // vitesse initiale des particules, ne pas trop changer non plus? à voir
 
 # -------- POTENTIAL --------
-potential = LJ
-# potential = NONE
+potential = LJ // Lennard Jones
+# potential = NONE // (IdealGas)
 
 # -------- LENNARD-JONES --------
-epsilon = 1.0
-sigma = 1.0
-cutoff = 2.5
+epsilon = 1.0 // Profondeur du puits
+sigma = 1.0 // taille effective des particules (distance à laquelle V=0), minimum du potentiel à 2^{1/6}sigma correspondant au premier pic de RDF
+cutoff = 2.5 // Limite de calcul des interactions 
 
 # -------- RDF --------
-rdfBins = 120
-rdfStart = 3000
+rdfBins = 120 // "résolution" du calcul de la RDF
+rdfStart = 3000 // step de début de calcul de la RDF (on suppose que le système vient de finir de thermaliser)
