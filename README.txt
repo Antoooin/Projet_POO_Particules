@@ -34,7 +34,7 @@ config.txt doit se trouver dans le même répertoire que l'exécutable.
 
 Clé            | Défaut | Description
 ---------------|--------|--------------------------------------------
-N              | 500    | Nombre de particules
+N              | 500    | Nombre de particules. N=100 : gaz, N=300 : liquide, N=400 : solide (LJ)
 boxSize        | 20.0   | Côté de la boîte carrée
 dt             | 0.0005 | Pas de temps (ne pas dépasser ~0.001 pour LJ)
 steps          | 10000  | Nombre de pas de simulation
