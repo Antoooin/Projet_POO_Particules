@@ -8,7 +8,7 @@ public:
         : epsilon(epsilon_), sigma(sigma_), cutoff(cutoff_) {}
 
     void computeForces(System& system) override;
-
+    double energy(const System& system) const override;
 private:
     double epsilon;
     double sigma;
