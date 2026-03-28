@@ -9,7 +9,7 @@ double Energy::kinetic(const System& system)
     return E;
 }
 
-// Énergie potentielle LJ — voir LennardJones::energy() pour la version
+// Énergie potentielle LJ : voir LennardJones::energy() pour la version
 // encapsulée. Conservée ici pour usage indépendant du polymorphisme.
 double Energy::potentialLJ(const System& system,
                            double epsilon, double sigma, double cutoff)

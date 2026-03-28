@@ -17,7 +17,7 @@ g++ Boundary.cpp Config.cpp Energy.cpp Euler.cpp Generator.cpp IdealGas.cpp \
 
 Options de compilation :
   -O2   optimisation standard (recommandée)
-  -O3   optimisation agressive — peut modifier l'ordre des opérations flottantes,
+  -O3   optimisation agressive : peut modifier l'ordre des opérations flottantes,
         à éviter pour des tests de conservation de l'énergie
 
 ## Utilisation
@@ -58,7 +58,7 @@ Fichier           | Contenu
 positions.csv     | Une ligne par step : x0,y0,x1,y1,...,xN,yN
 velocities.csv    | Même format pour les vitesses
 energies.csv      | step, Ek, Ep, Etot, dE_rel (dérive relative)
-rdf.csv           | r, g(r) — fonction de distribution radiale
+rdf.csv           | r, g(r) : fonction de distribution radiale
 
 ---
 

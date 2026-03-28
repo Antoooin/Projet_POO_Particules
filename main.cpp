@@ -115,7 +115,7 @@ int main()
         }
         velFile << "\n";
 
-        // Énergies — Ep via le polymorphisme (IdealGas retourne 0 automatiquement)
+        // Énergies : Ep via le polymorphisme (IdealGas retourne 0 automatiquement)
         double Ek   = Energy::kinetic(sys);
         double Ep   = potential->energy(sys);
         double Etot = Ek + Ep;
