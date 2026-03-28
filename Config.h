@@ -12,6 +12,9 @@ struct Config {
     // Potentiel
     std::string potential = "LJ";   // "LJ" ou "NONE"
 
+    // Intégrateur
+    std::string integrator = "VV";  // "VV", "Euler", "RK4"
+
     // Lennard-Jones
     double epsilon = 2.0;
     double sigma = 1.0;
