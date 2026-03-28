@@ -1,22 +1,24 @@
 # -------- SYSTEM --------
-N = 800 //nb de particules
-boxSize = 20 // taille de la boite (carrée, ne pas y toucher)
-dt = 0.0005 // Ne pas changer, si trop haut -> pb pour LJ ("saut" de barrières énergétiques donc collision)
-steps = 15000 // à voir pour une thermalisation suffisante 
-initVelocity = 0.3 // vitesse initiale des particules, ne pas trop changer non plus? à voir
+N = 400
+boxSize = 20
+dt = 0.0005        // Ne pas dépasser ~0.001 pour LJ (risque de sauter les barrières énergétiques)
+steps = 15000
+initVelocity = 0.3
 
 # -------- POTENTIAL --------
-potential = LJ
+potential = LJ     // "LJ" (Lennard-Jones) ou "NONE" (gaz parfait)
 # potential = NONE
 
-# -------- INTEGRATOR ---------
-integrator = RK4
+# -------- INTEGRATOR --------
+integrator = VV    // "VV" (Velocity Verlet), "Euler", "RK4"
+# integrator = Euler
+# integrator = RK4
 
 # -------- LENNARD-JONES --------
-epsilon = 1.0 // Profondeur du puits
-sigma = 1.0 // taille effective des particules (distance à laquelle V=0), minimum du potentiel à 2^{1/6}sigma correspondant au premier pic de RDF
-cutoff = 2.5 // Limite de calcul des interactions 
+epsilon = 1.0      // profondeur du puits : V(r) = 4ε[(σ/r)¹² - (σ/r)⁶]
+sigma   = 1.0      // distance à laquelle V = 0 ; r_min = 2^(1/6)σ ≈ 1.122
+cutoff  = 2.5      // rayon de troncature en unités absolues
 
 # -------- RDF --------
-rdfBins = 120 // "résolution" du calcul de la RDF
-rdfStart = 3000 // step de début de calcul de la RDF (on suppose que le système vient de finir de thermaliser)
+rdfBins  = 120     // résolution de g(r)
+rdfStart = 3000    // step à partir duquel on échantillonne (système supposé thermalisé)
