@@ -11,9 +11,7 @@ de l'énergie, il ne FAUT PAS les utiliser en pratique pour une simulation effic
 
 ## Compilation
 
-g++ Boundary.cpp Config.cpp Energy.cpp Euler.cpp Generator.cpp IdealGas.cpp \
-    LennardJones.cpp RDF.cpp RK4.cpp Simulation.cpp VelocityVerlet.cpp main.cpp \
-    -O2 -std=c++17 -o main
+g++ Boundary.cpp Config.cpp Energy.cpp Euler.cpp Generator.cpp IdealGas.cpp LennardJones.cpp RDF.cpp RK4.cpp Simulation.cpp VelocityVerlet.cpp main.cpp -O2 -std=c++17 -o main.exe
 
 Options de compilation :
   -O2   optimisation standard (recommandée)

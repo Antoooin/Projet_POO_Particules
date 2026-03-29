@@ -33,7 +33,11 @@ void RDF::sample(const System& system)
 
             double r = rij.norm();
             if(r < rMax)
-                histogram[static_cast<int>(r / dr)] += 2.0;
+            {
+                int bin = static_cast<int>(r / dr);
+                if(bin >= 0 && bin < bins)
+                    histogram[bin] += 2.0;
+            }
         }
 }
 

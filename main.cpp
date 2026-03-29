@@ -94,7 +94,6 @@ int main()
     // --- 8. Boucle principale ---
     std::cout << "Running simulation...\n";
     double E0 = 0.0;  // énergie au step 0, pour la dérive relative
-
     for(size_t step = 0; step < cfg.steps; ++step)
     {
         sim.step();
@@ -117,7 +116,7 @@ int main()
 
         // Énergies : Ep via le polymorphisme (IdealGas retourne 0 automatiquement)
         double Ek   = Energy::kinetic(sys);
-        double Ep   = potential->energy(sys);
+        double Ep = sim.potentialEnergy();
         double Etot = Ek + Ep;
 
         if(step == 0) E0 = Etot;

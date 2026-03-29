@@ -16,6 +16,10 @@ public:
     void step();               // avance d'un pas de temps
     void run(size_t steps);    // boucle sur plusieurs pas
     System& getSystem();
+    // Énergie potentielle via le potentiel interne.
+    // IMPORTANT : ne pas appeler potential->energy() depuis main après std::move
+    // le unique_ptr est vide après le move. Passer par cette méthode à la place.
+    double potentialEnergy() const { return potential->energy(system); }
 
 private:
     System                     system;
