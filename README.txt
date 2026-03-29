@@ -81,6 +81,7 @@ Boundary.h / .cpp      | Conditions aux limites périodiques
 RDF.h / .cpp           | Fonction de distribution radiale g(r)
 Simulation.h / .cpp    | Boucle principale (intégration + PBC)
 main.cpp               | Point d'entrée, I/O, boucle de simulation
+visualisation.py       | Proposition simple de visualisation des observables
 
 ---
 
