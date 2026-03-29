@@ -128,13 +128,8 @@ plt.close(fig_e)
 # ------------------------------------------------------------
 print("Tracé de la RDF...")
 
-sigma_LJ = 1.0  # à ajuster si besoin
-r_min    = 2 ** (1/6) * sigma_LJ
-
 fig_r, ax_r = plt.subplots(figsize=(8, 4))
 ax_r.plot(df_rdf["r"], df_rdf["g"], color=COLOR, lw=1.5, label="g(r)")
-ax_r.axvline(r_min, color="#D85A30", ls="--", lw=1,
-             label=rf"$r_{{min}}=2^{{1/6}}\sigma={r_min:.3f}$")
 ax_r.axhline(1,     color="gray",   ls=":",  lw=0.8, label="gaz parfait")
 ax_r.set_xlabel("r", fontsize=12)
 ax_r.set_ylabel("g(r)", fontsize=12)
